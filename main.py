@@ -15,7 +15,6 @@ def collate_wrapper(batch):
 
 if __name__ == "__main__":
 
-
     cuda = torch.device('cuda')
     cpu = torch.device('cpu')
 
@@ -26,7 +25,7 @@ if __name__ == "__main__":
 
     writer = SummaryWriter()
 
-    batch_size = 60
+    batch_size = 32
     iter_num = 0
 
     save_interval = 20
@@ -40,9 +39,10 @@ if __name__ == "__main__":
             optimizer.zero_grad()
             batch_loss = 0
             for game in batch_data:
-                probs = net(game).view(-1)
+                probs = net(*game.features()).view(-1)
                 n_frames = len(probs)
-                importance = np.arange(n_frames).astype("float32") / n_frames
+                importance = np.arange(n_frames).astype("float32") / n_frames + 0.1
+                importance = np.clip(importance, 0, 1)
                 importance_tensor = torch.from_numpy(importance).to(cuda)
 
                 loss = probs - game.rad_win
@@ -54,8 +54,6 @@ if __name__ == "__main__":
             print("batch loss {}".format(batch_loss))
             writer.add_scalar("loss", batch_loss, iter_num)
             optimizer.step()
-            #for game in batch_data:
-            #    game.to(cpu)  # save memory
 
             iter_num += 1
             if iter_num % save_interval == 0:

@@ -75,7 +75,10 @@ class ReplayBatch(object):
         self.dire_hero_state = torch.from_numpy(np.asarray(self.dire_hero_state)).unsqueeze(0).to(device)
         self.rad_creep_state = torch.from_numpy(np.asarray(self.rad_creep_state)).unsqueeze(0).to(device)
         self.dire_creep_state = torch.from_numpy(np.asarray(self.dire_creep_state)).unsqueeze(0).to(device)
-        self.rad_win = replay.radiant_win
+        self.rad_win = int(replay.radiant_win)
+
+    def features(self):
+        return self.rad_hero_state, self.dire_hero_state, self.rad_creep_state, self.dire_creep_state
 
     def to(self, device):
         self.rad_hero_state = self.rad_hero_state.to(device)

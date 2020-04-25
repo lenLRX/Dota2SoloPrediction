@@ -15,7 +15,7 @@ if __name__ == "__main__":
     net = SoloPredictionNet()
     net.load_state_dict(m)
 
-    preds = net(rep).view(-1).detach().numpy().tolist()
+    preds = net(*rep.features()).view(-1).detach().numpy().tolist()
     print("radiant win {}".format(rep.rad_win))
     plot.plot(preds)
     plot.title("radiant win {}".format(rep.rad_win))

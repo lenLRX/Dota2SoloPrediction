@@ -18,12 +18,7 @@ class SoloPredictionNet(nn.Module):
         self.lstm = nn.LSTM(self.hidden * 4, self.lstm_hidden, batch_first=True)
         self.prob_fc = nn.Linear(self.lstm_hidden, 1)
 
-    def forward(self, rep):
-        rad_hero_state = rep.rad_hero_state
-        dire_hero_state = rep.dire_hero_state
-        rad_creep_state = rep.rad_creep_state
-        dire_creep_state = rep.dire_creep_state
-
+    def forward(self, rad_hero_state, dire_hero_state, rad_creep_state, dire_creep_state):
         o_rad_hero_state = F.relu(self.rad_hero_fc(rad_hero_state)).max(-2).values
         o_dire_hero_state = F.relu(self.dire_hero_fc(dire_hero_state)).max(-2).values
         o_rad_creep_state = F.relu(self.rad_creep_fc(rad_creep_state)).max(-2).values
